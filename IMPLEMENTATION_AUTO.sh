@@ -29,12 +29,14 @@ BACKUP_DIR="$HOME/bmi_deployments_backup"
 FRONTEND_DIR="/var/www/bmi-health-tracker"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 
-# Database Configuration (will be set by user input)
-DB_NAME="bmidb"
-DB_USER="bmi_user"
-DB_PASSWORD=""
-DB_HOST="localhost"
-DB_PORT="5432"
+# Database Configuration
+# IMPORTANT: Use ${VAR:-default} to preserve environment variables if set
+# This allows automated deployment via Terraform while keeping interactive mode
+DB_NAME="${DB_NAME:-bmidb}"
+DB_USER="${DB_USER:-bmi_user}"
+DB_PASSWORD="${DB_PASSWORD:-}"  # Empty default, will prompt if not set
+DB_HOST="${DB_HOST:-localhost}"
+DB_PORT="${DB_PORT:-5432}"
 
 # Parse command line arguments
 SKIP_NGINX=false
@@ -63,6 +65,13 @@ for arg in "$@"; do
             echo "  --skip-backup   Skip creating backup"
             echo "  --fresh         Fresh deployment (clean install)"
             echo "  --help          Show this help message"
+            echo ""
+            echo "Environment Variables (for automated deployment):"
+            echo "  DB_NAME         Database name (default: bmidb)"
+            echo "  DB_USER         Database user (default: bmi_user)"
+            echo "  DB_PASSWORD     Database password (required for automation)"
+            echo "  DB_HOST         Database host (default: localhost)"
+            echo "  DB_PORT         Database port (default: 5432)"
             exit 0
             ;;
     esac
@@ -128,6 +137,20 @@ get_ec2_public_ip() {
 collect_database_credentials() {
     print_header "Database Configuration"
     
+    # Check if running in automated mode with environment variables
+    if [ -n "$DB_NAME" ] && [ -n "$DB_USER" ] && [ -n "$DB_PASSWORD" ]; then
+        print_success "Using provided database credentials from environment variables"
+        echo ""
+        echo "Database Name: $DB_NAME"
+        echo "Database User: $DB_USER"
+        echo "Database Password: [SET - ${#DB_PASSWORD} characters]"
+        echo "Database Host: $DB_HOST"
+        echo "Database Port: $DB_PORT"
+        echo ""
+        return 0
+    fi
+
+    # Interactive mode
     echo "Please provide database credentials for the BMI Health Tracker"
     echo ""
     
