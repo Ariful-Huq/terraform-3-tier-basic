@@ -10,7 +10,7 @@ output "instance_arn" {
   value       = aws_instance.this.arn
 }
 
-output "instance_public_ip" {
+output "public_ip" {
   description = "Public IP address of the EC2 instance"
   value       = aws_instance.this.public_ip
 }
@@ -20,7 +20,7 @@ output "instance_public_dns" {
   value       = aws_instance.this.public_dns
 }
 
-output "instance_private_ip" {
+output "private_ip" {
   description = "Private IP address of the EC2 instance"
   value       = aws_instance.this.private_ip
 }

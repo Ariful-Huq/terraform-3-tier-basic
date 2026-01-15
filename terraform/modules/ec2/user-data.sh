@@ -10,28 +10,23 @@ echo "Starting BMI Health Tracker Deployment"
 echo "Time: $(date)"
 echo "========================================"
 
-# Wait for cloud-init to complete
-echo "Waiting for cloud-init to complete..."
-cloud-init status --wait || true
-
-# Update package lists
-echo "Updating package lists..."
+# Update and upgrade system packages
 apt-get update -qq
+apt-get upgrade -y
 
-# Install required packages
-echo "Installing prerequisites..."
-apt-get install -y curl wget git
+# Install essential packages
+apt-get install -y net-tools zip unzip
 
 # Clone the application repository
 echo "Cloning application from GitHub..."
 DEPLOY_DIR="/home/ubuntu/bmi-health-tracker"
-git clone https://github.com/md-sarowar-alam/terraform-3-tier-basic.git "$DEPLOY_DIR"
+git clone https://github.com/Ariful-Huq/terraform-3-tier-basic.git "$DEPLOY_DIR"
 
 cd "$DEPLOY_DIR"
 
 echo "========================================"
 echo "Application cloned successfully!"
-echo "Repository: https://github.com/md-sarowar-alam/terraform-3-tier-basic.git"
+echo "Repository: https://github.com/Ariful-Huq/terraform-3-tier-basic.git"
 echo "Location: $DEPLOY_DIR"
 echo "========================================"
 
@@ -68,7 +63,7 @@ export DB_PASSWORD="${db_password}"
 # Run deployment with automatic answers
 echo "Executing deployment script..."
 cd "$DEPLOY_DIR"
-echo -e "y\n${db_name}\n${db_user}\n${db_password}\n${db_password}\n" | sudo -u ubuntu ./IMPLEMENTATION_AUTO.sh --fresh 2>&1 | tee /var/log/bmi-deployment.log
+echo -e "y\n${db_name}\n${db_user}\n${db_password}\n${db_password}" | sudo -u ubuntu ./IMPLEMENTATION_AUTO.sh --fresh 2>&1 | tee /var/log/bmi-deployment.log
 # Execute the deployment
 # Note: This will run in background and log to /var/log/bmi-deployment.log
 # The actual deployment requires the full application code to be present
@@ -86,6 +81,6 @@ echo ""
 echo "Check logs:"
 echo "  sudo tail -f /var/log/user-data.log"
 echo "Deployment status:"
-echo "  Application cloned from: https://github.com/md-sarowar-alam/terraform-3-tier-basic.git"
+echo "  Application cloned from: https://github.com/Ariful-Huq/terraform-3-tier-basic.git"
 echo "  Location: $DEPLOY_DIR"
-echo "  Deployment script execut
+echo "  Deployment script executed successfully!"

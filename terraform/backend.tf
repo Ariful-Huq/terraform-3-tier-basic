@@ -4,14 +4,12 @@
 
 terraform {
   backend "s3" {
-    bucket  = "my-terraform-state-bucket"  # Change this to your bucket name
-    key     = "bmi-app/terraform.tfstate"
-    region  = "us-east-1"                  # Change to your region
-    profile = "default"                     # Change to your AWS profile name
-    
-    # Enable encryption
-    encrypt = true
-    
-    # Note: DynamoDB table is not used (as per requirements)
-  }
+      bucket  = "ostad08-ariful-terraform-bucket"  # Replace with your S3 bucket name
+      key     = "terraform-3-tier-basic/terraform.tfstate"
+      region  = "ap-southeast-2"                   # Replace with your region
+      profile = "ariful-huq"                       # Replace with your AWS profile
+
+      # Enable encryption
+      encrypt = true
+    }
 }

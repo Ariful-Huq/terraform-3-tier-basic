@@ -12,31 +12,31 @@ locals {
 
 # Create the EC2 instance
 resource "aws_instance" "this" {
-  ami                         = var.ami_id
-  instance_type               = var.instance_type
-  key_name                    = var.key_name
-  subnet_id                   = var.subnet_id
-  vpc_security_group_ids      = [var.security_group_id]
-  associate_public_ip_address = var.associate_public_ip
-  
+  ami                    = var.ami_id
+  instance_type          = var.instance_type
+  key_name               = var.key_name != "" ? var.key_name : null
+  subnet_id              = var.subnet_id
+  vpc_security_group_ids = [var.security_group_id]
+  associate_public_ip_address = true
+
   # Userdata script for automated deployment
   user_data = local.userdata_script
-  
+
   # Ensure userdata runs on every boot (optional)
   user_data_replace_on_change = true
-  
+
   # Root volume configuration
   root_block_device {
-    volume_type           = "gp3"
     volume_size           = 20  # GB - enough for OS, Node.js, PostgreSQL, and app
+    volume_type           = "gp3"
     delete_on_termination = true
     encrypted             = true
-    
+
     tags = {
       Name = "${var.instance_name}-root-volume"
     }
   }
-  
+
   # Instance metadata options (IMDSv2)
   metadata_options {
     http_endpoint               = "enabled"
@@ -44,21 +44,21 @@ resource "aws_instance" "this" {
     http_put_response_hop_limit = 1
     instance_metadata_tags      = "enabled"
   }
-  
+
   # Monitoring
   monitoring = true
   
   # Tags
   tags = merge(
-    {
-      Name        = var.instance_name
-      Environment = var.environment
-      Application = "BMI-Health-Tracker"
-      Tier        = "Full-Stack"
-      ManagedBy   = "Terraform"
-    },
-    var.additional_tags
-  )
+      {
+        Name        = var.instance_name
+        Environment = var.environment
+        Application = "BMI-Health-Tracker"
+        Tier        = "Full-Stack"
+        ManagedBy   = "Terraform"
+      },
+      var.additional_tags
+    )
   
   # Lifecycle
   lifecycle {

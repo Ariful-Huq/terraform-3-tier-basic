@@ -5,13 +5,13 @@
 # ===========================
 
 variable "aws_region" {
-  description = "AWS region where resources will be created"
+  description = "AWS region"
   type        = string
-  default     = "us-east-1"
+  default     = "ap-southeast-2"
 }
 
 variable "aws_profile" {
-  description = "AWS CLI named profile to use for authentication"
+  description = "AWS named profile to use"
   type        = string
   default     = "default"
 }
@@ -29,14 +29,14 @@ variable "environment" {
 variable "instance_name" {
   description = "Name tag for the EC2 instance"
   type        = string
-  default     = "bmi-health-tracker-server"
+  default     = "terraform-bmi-health-tracker-server"
 }
 
 variable "instance_type" {
   description = "EC2 instance type"
   type        = string
   default     = "t2.micro"
-  
+
   validation {
     condition     = can(regex("^t[2-3]\\.(micro|small|medium)", var.instance_type))
     error_message = "Instance type must be a valid t2 or t3 type (micro, small, or medium recommended)."
@@ -44,16 +44,15 @@ variable "instance_type" {
 }
 
 variable "ami_id" {
-  description = "AMI ID for Ubuntu 22.04 LTS (must be Ubuntu for the deployment script)"
+  description = "AMI ID for the EC2 instance"
   type        = string
-  
-  # Default: Ubuntu 22.04 LTS in us-east-1
-  # Find latest: aws ec2 describe-images --owners 099720109477 --filters "Name=name,Values=ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*" --query 'sort_by(Images, &CreationDate)[-1].ImageId'
-  default     = "ami-0e86e20dae9224db8"
+
+  # Default: Ubuntu 24.04 LTS in ap-southeast-2
+  default     = "ami-0b8d527345fdace59"
 }
 
 variable "key_name" {
-  description = "Name of the EC2 key pair for SSH access"
+  description = "Key pair name for SSH access"
   type        = string
 }
 
@@ -62,17 +61,18 @@ variable "key_name" {
 # ===========================
 
 variable "vpc_id" {
-  description = "VPC ID where the EC2 instance will be launched"
+  description = "VPC ID where the instance will be launched"
   type        = string
 }
 
+
 variable "subnet_id" {
-  description = "Subnet ID for the EC2 instance (must be a public subnet)"
+  description = "Subnet ID where the instance will be launched"
   type        = string
 }
 
 variable "security_group_id" {
-  description = "Security Group ID for the EC2 instance (should allow ports 22, 80, 443)"
+  description = "Security Group ID to attach to the instance"
   type        = string
 }
 
