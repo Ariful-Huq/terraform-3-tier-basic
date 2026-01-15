@@ -54,16 +54,41 @@ echo "========================================"
 echo "Starting automated deployment..."
 echo "========================================"
 
-# Export database credentials as environment variables
-export DB_NAME="${db_name}"
-export DB_USER="${db_user}"
-export DB_PASSWORD="${db_password}"
+# Database credentials from Terraform variables
+DB_NAME="${db_name}"
+DB_USER="${db_user}"
+DB_PASSWORD="${db_password}"
 
-# Run as ubuntu user with auto-yes
-# Run deployment with automatic answers
-echo "Executing deployment script..."
+echo "========================================"
+echo "Database Configuration"
+echo "========================================"
+echo "DB_NAME: $DB_NAME"
+echo "DB_USER: $DB_USER"
+echo "DB_PASSWORD: [REDACTED - Length: ${#DB_PASSWORD} characters]"
+echo "========================================"
+
+# Run the deployment script with environment variables
+echo "========================================"
+echo "Starting automated deployment..."
+echo "========================================"
+
 cd "$DEPLOY_DIR"
-echo -e "y\n${db_name}\n${db_user}\n${db_password}\n${db_password}" | sudo -u ubuntu ./IMPLEMENTATION_AUTO.sh --fresh 2>&1 | tee /var/log/bmi-deployment.log
+
+# Execute deployment with environment variables passed to ubuntu user
+# Using bash -c to ensure environment variables are properly exported
+sudo -u ubuntu bash -c "
+    export DB_NAME='$DB_NAME'
+    export DB_USER='$DB_USER'
+    export DB_PASSWORD='$DB_PASSWORD'
+
+    cd "$DEPLOY_DIR"
+
+    echo "Executing deployment script..."
+    
+    # Run deployment with --fresh flag
+    # The script will detect environment variables and skip interactive prompts
+    ./IMPLEMENTATION_AUTO.sh --fresh
+" 2>&1 | tee /var/log/bmi-deployment.log
 # Execute the deployment
 # Note: This will run in background and log to /var/log/bmi-deployment.log
 # The actual deployment requires the full application code to be present
