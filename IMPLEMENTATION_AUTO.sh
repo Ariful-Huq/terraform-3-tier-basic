@@ -942,8 +942,15 @@ main() {
     [ "$FRESH_DEPLOY" = true ] && echo "  - Fresh deployment (clean install)"
     echo ""
     
-    read -p "Continue with deployment? (y/n): " -n 1 -r
-    echo
+    # Auto-confirm logic
+    if [ "$AUTO_CONFIRM" = true ]; then
+        REPLY="y"
+        echo "Auto-confirm enabled: proceeding without prompt"
+    else
+        read -p "Continue with deployment? (y/n): " -n 1 -r
+        echo
+    fi
+
     if [[ ! $REPLY =~ ^[Yy]$ ]]; then
         print_error "Deployment cancelled"
         exit 1
