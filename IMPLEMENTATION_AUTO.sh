@@ -139,7 +139,7 @@ collect_database_credentials() {
     
     # Check if running in automated mode with environment variables
     if [ -n "$DB_NAME" ] && [ -n "$DB_USER" ] && [ -n "$DB_PASSWORD" ]; then
-        print_success "Using provided database credentials from environment variables"
+        print_success "Using provided database credentials from environment variables (automation mode)"
         echo ""
         echo "Database Name: $DB_NAME"
         echo "Database User: $DB_USER"

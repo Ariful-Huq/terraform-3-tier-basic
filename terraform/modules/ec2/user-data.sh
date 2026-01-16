@@ -12,7 +12,8 @@ echo "========================================"
 
 # Update and upgrade system packages
 apt-get update -qq
-apt-get upgrade -y
+apt-get upgrade -y -qq
+echo "[SUCCESS] System updated"
 
 # Install essential packages
 apt-get install -y net-tools zip unzip
@@ -55,9 +56,9 @@ echo "Starting automated deployment..."
 echo "========================================"
 
 # Database credentials from Terraform variables
-DB_NAME="${db_name}"
-DB_USER="${db_user}"
-DB_PASSWORD="${db_password}"
+export DB_NAME="${db_name}"
+export DB_USER="${db_user}"
+export DB_PASSWORD="${db_password}"
 
 echo "========================================"
 echo "Database Configuration"
@@ -72,21 +73,14 @@ echo "========================================"
 echo "Starting automated deployment..."
 echo "========================================"
 
-cd "$DEPLOY_DIR"
-
 # Execute deployment with environment variables passed to ubuntu user
 # Using bash -c to ensure environment variables are properly exported
-sudo -u ubuntu bash -c "
+echo "Executing deployment script..."
+sudo -u ubuntu -E bash -c "
     export DB_NAME='$DB_NAME'
     export DB_USER='$DB_USER'
     export DB_PASSWORD='$DB_PASSWORD'
-
-    cd "$DEPLOY_DIR"
-
-    echo "Executing deployment script..."
-    
-    # Run deployment with --fresh flag
-    # The script will detect environment variables and skip interactive prompts
+    cd '$DEPLOY_DIR' &&
     ./IMPLEMENTATION_AUTO.sh --fresh
 " 2>&1 | tee /var/log/bmi-deployment.log
 # Execute the deployment
