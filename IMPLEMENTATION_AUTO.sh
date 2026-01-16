@@ -310,7 +310,8 @@ check_prerequisites() {
         # If NVM is not installed, install it
         if [ ! -s "$HOME/.nvm/nvm.sh" ]; then
             print_info "Installing NVM..."
-            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+
             
             # Load NVM immediately after installation
             export NVM_DIR="$HOME/.nvm"
@@ -334,7 +335,7 @@ check_prerequisites() {
                 
                 # Check if NVM is already in profile
                 if ! grep -q 'NVM_DIR' "$PROFILE_FILE" 2>/dev/null; then
-                    cat >> "$PROFILE_FILE" << 'NVMEOF'
+                    cat >> "$PROFILE_FILE" << NVMEOF
 
 # Load NVM
 export NVM_DIR="$HOME/.nvm"

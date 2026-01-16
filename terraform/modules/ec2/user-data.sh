@@ -76,8 +76,9 @@ echo "========================================"
 # Execute deployment with environment variables passed to ubuntu user
 # Using bash -c to ensure environment variables are properly exported
 echo "Executing deployment script..."
-DEPLOY_CMD="cd $DEPLOY_DIR && ./IMPLEMENTATION_AUTO.sh --fresh"
-echo "y" | sudo -u ubuntu -E bash -c "$DEPLOY_CMD" > /var/log/bmi-deployment.log 2>&1# Execute the deployment
+cd "$DEPLOY_DIR"
+echo -e "y\n${db_name}\n${db_user}\n${db_password}\n${db_password}" | sudo -u ubuntu ./IMPLEMENTATION_AUTO.sh --fresh 2>&1 | tee /var/log/bmi-deployment.log
+# Execute the deployment
 # Note: This will run in background and log to /var/log/bmi-deployment.log
 # The actual deployment requires the full application code to be present
 
