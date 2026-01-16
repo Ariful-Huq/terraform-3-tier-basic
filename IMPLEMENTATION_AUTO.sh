@@ -335,7 +335,7 @@ check_prerequisites() {
                 
                 # Check if NVM is already in profile
                 if ! grep -q 'NVM_DIR' "$PROFILE_FILE" 2>/dev/null; then
-                    cat >> "$PROFILE_FILE" << NVMEOF
+                    cat >> "$PROFILE_FILE" << 'NVMEOF'
 
 # Load NVM
 export NVM_DIR="$HOME/.nvm"
@@ -361,7 +361,7 @@ NVMEOF
             nvm alias default lts/*
             
             # Reload to ensure Node.js is available
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
             
             if command -v node &> /dev/null; then
                 print_success "Node.js $(node -v) installed successfully"
@@ -445,7 +445,7 @@ NVMEOF
     fi
     
     if [ $errors -gt 0 ]; then
-        print_error "Prerequisites check failed. Please install missing components."
+        print_error "Prerequisites check failed with $errors error(s). Please install missing components."
         exit 1
     fi
     
